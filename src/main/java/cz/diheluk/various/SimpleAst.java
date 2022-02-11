@@ -5,9 +5,10 @@ public class SimpleAst {
 
         //String s = "3 + 6 * 2";
         //double expected = 3 + 6 * 2;
-        //String s = "(3 + 6 * 2) * 8 - 2";
-        String s = "5 * (3 + 6 * 2) + 4 + (1 - 6 + 3) * (10 * 2)";
-        double expected = 5 * (3 + 6 * 2) + 4 + (1 - 6 + 3) * (10 * 2);
+        String s = "0 + (3 + 6 * 2) * 8 - 2";
+        double expected = (3 + 6 * 2) * 8 - 2;
+        //String s = "5 * (3 + 6 * 2) + 4 + (1 - 6 + 3) * (10 * 2)";
+        //double expected = 5 * (3 + 6 * 2) + 4 + (1 - 6 + 3) * (10 * 2);
 
         array = s.toCharArray();
         Tree tree = new Tree();
@@ -143,8 +144,7 @@ public class SimpleAst {
         Node currentLayer = null;
         Node tmp;
 
-        // first iteration of while below to get rid of one branching
-        // todo check if always ok
+        // todo expressions starting with '(; not working correctly; double brackets not working
         Token token = lexer();
         if(token != null) {
             if (token.operator == '(') { //recurse
@@ -163,7 +163,10 @@ public class SimpleAst {
         while (token != null) {
             tmp = new Node(token);
 
-            if(token.type == Type.OPERATOR) {
+            if(root == null) {
+               root = tmp;
+               currentLayer = tmp;
+            } else if(token.type == Type.OPERATOR) {
                 if(root.token.type == Type.NUMBER) {
                     tmp.left = root;
                     root = tmp;
